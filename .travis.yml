@@ -15,7 +15,7 @@ matrix:
 install:
   - sudo add-apt-repository -y ppa:beineri/opt-qt-5.12.3-bionic
   - sudo apt update
-  - sudo apt install build-essential g++ make ffmpeg sox mplayer libnotify-dev mesa-common-dev libglvnd-dev
+  - sudo apt install build-essential g++ make ffmpeg sox mplayer libnotify-dev mesa-common-dev libglvnd-dev desktop-file-utils
   - sudo apt install qt-latest tree
   - echo "/opt/qt512/bin" | sudo tee /etc/xdg/qtchooser/default.conf
   - echo "/opt/qt512/lib" | sudo tee -a /etc/xdg/qtchooser/default.conf
@@ -40,6 +40,7 @@ before_deploy:
   - wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
   - wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
   - chmod +x *.AppImage
+  - chmod +x comple*.sh
   # build the AppDir
   - make install INSTALL_ROOT=AppDir
   # add extra tools
@@ -49,19 +50,22 @@ before_deploy:
   # listing the result
   - ls -lh *.AppImage
   # get the tag version
-  export VERSION="$(git describe --tags --exact-match HEAD 2> /dev/null)"
+  - export VERSION="$(git describe --tags --exact-match HEAD 2> /dev/null)"
   # set the version on the filename
   - mv MystiQ*AppImage MystiQ_$VERSION.AppImage
 
 # deploy to Github
 deploy:
+  # deploy on linux
   - provider: releases
-    api_key: $GITHUB_TOKEN
+    api_key: $OAUTHTOKEN
     file_glob: true
     draft: true
     overwrite: true
     skip_cleanup: true
     on:
+      repo: llamaret/MystiQ
       tags: true
-    file:
-      - ./*.AppImage
+    file: 
+      - ./MystiQ*.AppImage
+
