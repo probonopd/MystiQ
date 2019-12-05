@@ -129,8 +129,9 @@ RESOURCES += \
     translator.qrc
 
 TRANSLATIONS += \
-    translations/mystiq_es_ES.ts \
-    translations/mystiq_fr.ts
+    translations/mystiq_es.ts \
+    translations/mystiq_fr.ts \
+    translations/mystiq_de.ts
 
 INCLUDEPATH += .
 
