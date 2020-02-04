@@ -14,8 +14,8 @@ install:
 # build & test scripts
 script:
   - qmake mystiq.pro
-  - make
-  - sudo make install
+  - make -j$(nproc)
+  - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
 
 # make the AppImage bundle
 before_deploy:
