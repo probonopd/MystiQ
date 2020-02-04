@@ -15,7 +15,8 @@ install:
 script:
   - qmake mystiq.pro
   - make -j$(nproc)
-  - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
+  - make INSTALL_ROOT=appdir -j$(nproc) install || true
+  - find appdir/
 
 # make the AppImage bundle
 before_deploy:
