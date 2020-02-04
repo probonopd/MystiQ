@@ -16,6 +16,7 @@ script:
   - qmake CONFIG+=release PREFIX=/usr
   - make -j$(nproc)
   - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
+  - rm -rf appdir/usr/share/metainfo # FIXME: Remove this line once go-appimage bundles appstreamcli
   - convert -resize 128x128 appdir/usr/share/icons/hicolor/scalable/apps/mystiq.svg appdir/mystiq.png
   - ( cd appdir/ && apt-get -y download ffmpeg && dpkg -x ffmpeg*.deb . && rm *.deb )
   - wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
