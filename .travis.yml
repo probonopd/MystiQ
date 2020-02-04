@@ -11,15 +11,11 @@ install:
   - sudo apt-get -y install qt512base qt512multimedia qt512quickcontrols qt512quickcontrols2 qt512declarative qt512svg qt512multimedia build-essential g++ make ffmpeg sox libnotify-dev mesa-common-dev libpulse-dev libpulse-mainloop-glib0 libgl1-mesa-dev
   - source /opt/qt*/bin/qt*-env.sh
 
-# build & test scripts
+# build & make & upload AppImage
 script:
   - qmake mystiq.pro
   - make -j$(nproc)
-  - make INSTALL_ROOT=appdir -j$(nproc) install || true
-  - find appdir/
-
-# make the AppImage bundle
-before_deploy:
+  - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
   - wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
   - chmod +x ./appimagetool-*.AppImage
   - ./appimagetool-*.AppImage deploy AppDir/usr/share/applications/*.desktop
