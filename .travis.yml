@@ -18,8 +18,8 @@ script:
   - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
   - wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
   - chmod +x ./appimagetool-*.AppImage
-  - ./appimagetool-*.AppImage deploy AppDir/usr/share/applications/*.desktop
-  - ./appimagetool-*.AppImage AppDir/
+  - ./appimagetool-*.AppImage deploy appdir/usr/share/applications/*.desktop
+  - ./appimagetool-*.AppImage appdir/
 
 # do not build tags that we create when we upload to GitHub Releases
 branches:
