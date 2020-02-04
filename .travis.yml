@@ -29,44 +29,14 @@ script:
   - make
   - sudo make install
 
-# notifications (only via telegram)
-notifications:
-  email: true
-  #webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
-
 # make the AppImage bundle
 before_deploy:
-    # install AppImage toolchain
-  - wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-  - wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
-  - wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-  - chmod +x *.AppImage
-  - chmod +x comple*.sh
-  # build the AppDir
-  - make install INSTALL_ROOT=AppDir
-  # add extra tools
-  - ./complete_appdir.sh
-  # run the linuxdeploy script
-  - ./linuxdeploy-x86_64.AppImage --appdir=AppDir --plugin qt --output appimage
-  # listing the result
-  - ls -lh *.AppImage
-  # get the tag version
-  - export VERSION="$(git describe --tags --exact-match HEAD 2> /dev/null)"
-  # set the version on the filename
-  - mv MystiQ*AppImage MystiQ_$VERSION.AppImage
+  - wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+  - chmod +x ./appimagetool-*.AppImage
+  - ./appimagetool-*.AppImage deploy AppDir/usr/share/applications/*.desktop
+  - ./appimagetool-*.AppImage AppDir/
 
-# deploy to Github
-deploy:
-  # deploy on linux
-  - provider: releases
-    api_key: $OAUTHTOKEN
-    file_glob: true
-    draft: true
-    overwrite: true
-    skip_cleanup: true
-    on:
-      repo: llamaret/MystiQ
-      tags: true
-    file: 
-      - ./MystiQ*.AppImage
-
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)/
