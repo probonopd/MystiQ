@@ -8,7 +8,7 @@ dist: xenial
 install:
   - sudo add-apt-repository -y ppa:beineri/opt-qt-5.12.3-xenial
   - sudo apt-get update -qq
-  - sudo apt-get -y install qt512base qt512multimedia qt512quickcontrols qt512quickcontrols2 qt512declarative qt512svg qt512multimedia build-essential g++ make ffmpeg sox libnotify-dev mesa-common-dev libpulse-dev libpulse-mainloop-glib0 libgl1-mesa-dev
+  - sudo apt-get -y install imagemagick qt512base qt512multimedia qt512quickcontrols qt512quickcontrols2 qt512declarative qt512svg qt512multimedia build-essential g++ make ffmpeg sox libnotify-dev mesa-common-dev libpulse-dev libpulse-mainloop-glib0 libgl1-mesa-dev
   - source /opt/qt*/bin/qt*-env.sh
 
 # build & make & upload AppImage
@@ -16,6 +16,7 @@ script:
   - qmake CONFIG+=release PREFIX=/usr
   - make -j$(nproc)
   - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
+  - convert -resize 128x128 appdir/usr/share/icons/hicolor/scalable/apps/mystiq.svg appdir/mystiq.png
   - ( cd appdir/ && apt-get -y download ffmpeg && dpkg -x ffmpeg*.deb . && rm *.deb )
   - wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
   - chmod +x ./appimagetool-*.AppImage
